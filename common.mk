@@ -9,8 +9,8 @@
 # - load-data: a target which depends on the available use cases (cpu-only, devops, and/or iot)
 # - run-queries: a target which depends on the available use cases (cpu-only, devops, and/or iot)
 
-BIN_DIR := $(ROOT_DIR)/bin
-SCRIPT_DIR := $(ROOT_DIR)/scripts
+BIN_DIR := $(ROOT_DIR)/tsbs/bin
+SCRIPT_DIR := $(ROOT_DIR)/tsbs/scripts
 COMPOSE := $(SCRIPT_DIR)/compose.sh
 GEN_DATA := $(BIN_DIR)/tsbs_generate_data
 GEN_QUERIES := $(BIN_DIR)/tsbs_generate_queries

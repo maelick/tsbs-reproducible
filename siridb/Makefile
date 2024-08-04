@@ -1,4 +1,4 @@
-ROOT_DIR := $(shell pwd)/../..
+ROOT_DIR := $(shell pwd)/..
 DB_NAME := $(shell basename $(shell pwd))
 LOAD_OPTIONS := --hosts localhost:9002
 RUN_OPTIONS := --hosts localhost:9002

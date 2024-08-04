@@ -1,4 +1,4 @@
-ROOT_DIR := $(shell pwd)/../..
+ROOT_DIR := $(shell pwd)/..
 DB_NAME := $(shell basename $(shell pwd))
 LOAD_OPTIONS := --url "mongodb://mongo:mongo@127.0.0.1:27017"
 #LOAD_OPTIONS := --url "mongodb://mongo:mongo@127.0.0.1:27017/?directConnection=true"

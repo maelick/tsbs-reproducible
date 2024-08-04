@@ -1,4 +1,4 @@
-ROOT_DIR := $(shell pwd)/../..
+ROOT_DIR := $(shell pwd)/..
 DB_NAME := $(shell basename $(shell pwd))
 LOAD_OPTIONS := --port 5433
 RUN_OPTIONS := --port 5433
