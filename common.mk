@@ -9,13 +9,15 @@
 # - load-data: a target which depends on the available use cases (cpu-only, devops, and/or iot)
 # - run-queries: a target which depends on the available use cases (cpu-only, devops, and/or iot)
 
-BIN_DIR := $(ROOT_DIR)/tsbs/bin
-SCRIPT_DIR := $(ROOT_DIR)/tsbs/scripts
-COMPOSE := $(SCRIPT_DIR)/compose.sh
-GEN_DATA := $(BIN_DIR)/tsbs_generate_data
-GEN_QUERIES := $(BIN_DIR)/tsbs_generate_queries
-LOAD_DATA := $(BIN_DIR)/tsbs_load
-RUN_QUERIES := $(BIN_DIR)/tsbs_run_queries
+USE_LOCAL_BINARY ?= false
+ifeq ($(USE_LOCAL_BINARY),true)
+	BIN_DIR := $(ROOT_DIR)/tsbs/bin/
+endif
+COMPOSE := $(ROOT_DIR)/compose.sh
+GEN_DATA := $(BIN_DIR)tsbs_generate_data
+GEN_QUERIES := $(BIN_DIR)tsbs_generate_queries
+LOAD_DATA := $(BIN_DIR)tsbs_load
+RUN_QUERIES := $(BIN_DIR)tsbs_run_queries
 
 CPU_ONLY_SCALE ?= 100
 DEVOPS_SCALE ?= 100

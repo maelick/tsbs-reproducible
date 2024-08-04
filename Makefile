@@ -4,8 +4,7 @@
 ## ----------------------------------------------------------------------------
 
 ROOT_DIR := $(shell pwd)
-SCRIPT_DIR := $(ROOT_DIR)/tsbs/scripts
-COMPOSE := $(SCRIPT_DIR)/compose.sh
+COMPOSE := $(ROOT_DIR)/compose.sh
 
 #ALL := akumuli cassandra clickhouse cratedb influx mongo questdb siridb timescaledb
 ALL := akumuli cratedb influx siridb timescaledb
