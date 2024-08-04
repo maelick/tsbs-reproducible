@@ -30,6 +30,10 @@ clean-logs:
 .PHONY: clean-volume
 clean-volume: $(addsuffix -clean-volume, $(ALL))
 
+.PHONY: tsbs
+tsbs:
+	$(MAKE) -C tsbs
+
 .PHONY: up
 up:
 	${COMPOSE} up -d
