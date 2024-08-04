@@ -53,7 +53,12 @@ IOT_QUERIES ?= \
 	avg-daily-driving-duration avg-daily-driving-session \
 	avg-load daily-activity breakdown-frequency
 
+.PHONY: help
+help:                  ## Show this help.
+	@sed -ne '/@sed/!s/## //p' $(MAKEFILE_LIST)
+
 .PHONY: benchmark
+benchmark:             ## Run the full benchmark for the database, shutdown its container and optionally clean up the volume if CLEAN_VOLUME_AFTER_BENCHMARK is set to true
 benchmark: data load-data run-queries
 ifeq ($(CLEAN_VOLUME_AFTER_BENCHMARK),true)
 	$(MAKE) clean-volume
@@ -62,58 +67,68 @@ else
 endif
 
 .PHONY: clean
+clean:                 ## Clean all data, queries, results, logs
 clean: clean-data clean-queries clean-results clean-logs
 
 .PHONY: clean-data
-clean-data:
+clean-data:            ## Clean all data directories
 	rm -rf data
 
 .PHONY: clean-queries
-clean-queries:
+clean-queries:         ## Clean all query directories
 	rm -rf queries
 
 .PHONY: clean-results
-clean-results:
+clean-results:         ## Clean all result directories
 	rm -rf results
 
 .PHONY: clean-logs
-clean-logs:
+clean-logs:            ## Clean all log directories
 	rm -rf logs
 	
 .PHONY: clean-volume
+clean-volume:          ## Clean the Docker volume
 clean-volume: down
 	docker volume rm -f tsbs_$(DB_NAME)-data
 
 .PHONY: ready
+ready:                 ## Start and wait for the database to be ready
 ready: up wait-db
 
 .PHONY: up
-up:
+up:                    ## Start the database
 	${COMPOSE} up -d ${DB_NAME}
 
 .PHONY: down
-down:
+down:                  ## Stop the database
 	${COMPOSE} down ${DB_NAME}
 
 .PHONY: devops-queries
+devops-queries:        ## Generate devops queries
 devops-queries: $(foreach query,$(DEVOPS_QUERIES),queries/devops/$(query).gz)
 
 .PHONY: cpu-only-queries
+cpu-only-queries:      ## Generate cpu-only queries
 cpu-only-queries: $(foreach query,$(CPU_ONLY_QUERIES),queries/cpu-only/$(query).gz)
 
 .PHONY: iot-queries
+iot-queries:           ## Generate iot queries
 iot-queries: $(foreach query,$(IOT_QUERIES),queries/iot/$(query).gz)
 
 .PHONY: run-cpu-only
+run-cpu-only:          ## Run the cpu-only queries
 run-cpu-only: $(foreach query,$(CPU_ONLY_QUERIES),run-cpu-only-$(query))
 
 .PHONY: run-devops
+run-devops:            ## Run the devops queries
 run-devops: $(foreach query,$(DEVOPS_QUERIES),run-devops-$(query))
 
 .PHONY: run-iot
+run-iot:               ## Run the iot queries
 run-iot: $(foreach query,$(IOT_QUERIES),run-iot-$(query))
 
 .PHONY: load-%
+load-%:	               ## Load the data for a specific use case
 load-%: ready data/%.gz
 	@echo "Loading $* data for ${DB_NAME}"
 	mkdir -p logs/load
@@ -127,6 +142,7 @@ load-%: ready data/%.gz
 		${LOAD_OPTIONS} | tee "logs/load/$*.log"
 
 .PHONY: run-cpu-only-%
+run-cpu-only-%:        ## Run a specific cpu-only query
 run-cpu-only-%: ready queries/cpu-only/%.gz
 	@echo "Running $* queries for ${DB_NAME}"
 	mkdir -p logs/cpu-only
@@ -139,6 +155,7 @@ run-cpu-only-%: ready queries/cpu-only/%.gz
 		${RUN_OPTIONS} | tee "logs/cpu-only/$*.log"
 
 .PHONY: run-devops-%
+run-devops-%:          ## Run a specific devops query
 run-devops-%: ready queries/devops/%.gz
 	@echo "Running $* queries for ${DB_NAME}"
 	mkdir -p logs/devops
@@ -151,6 +168,7 @@ run-devops-%: ready queries/devops/%.gz
 		${RUN_OPTIONS} | tee "logs/devops/$*.log"
 
 .PHONY: run-iot-%
+run-iot-%:             ## Run a specific iot query
 run-iot-%: ready queries/iot/%.gz
 	@echo "Running $* queries for ${DB_NAME}"
 	mkdir -p logs/iot
@@ -162,7 +180,7 @@ run-iot-%: ready queries/iot/%.gz
 		--results-file "results/iot/$*.json" \
 		${RUN_OPTIONS} | tee "logs/iot/$*.log"
 
-data/%.gz:
+data/%.gz:             ## Generate data for a specific use case
 	@echo "Generating $* data for ${DB_NAME}"
 	@mkdir -p data
 	$(eval SCALE := $(shell echo $* | sed 's/cpu-only/${CPU_ONLY_SCALE}/;s/devops/${DEVOPS_SCALE}/;s/iot/${IOT_SCALE}/'))
@@ -176,7 +194,7 @@ data/%.gz:
 		--format="${DB_NAME}" \
 		--file "$@"
 
-queries/cpu-only/%.gz:
+queries/cpu-only/%.gz: ## Generate cpu-only queries
 	@echo "Generating cpu-only $* queries for ${DB_NAME}"
 	@mkdir -p queries/cpu-only
 	${GEN_QUERIES} \
@@ -190,7 +208,7 @@ queries/cpu-only/%.gz:
 		--format=${DB_NAME} \
 		--file "$@"
 
-queries/devops/%.gz:
+queries/devops/%.gz:   ## Generate devops queries
 	@echo "Generating devops $* queries for ${DB_NAME}"
 	@mkdir -p queries/devops
 	${GEN_QUERIES} \
@@ -204,7 +222,7 @@ queries/devops/%.gz:
 		--format=${DB_NAME} \
 		--file "$@"
 
-queries/iot/%.gz:
+queries/iot/%.gz:      ## Generate iot queries
 	@echo "Generating iot $* queries for ${DB_NAME}"
 	@mkdir -p queries/iot
 	${GEN_QUERIES} \
