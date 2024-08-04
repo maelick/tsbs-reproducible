@@ -1,0 +1,19 @@
+services:
+  timescaledb:
+    image: timescale/timescaledb-ha:pg16
+    ports:
+      - 127.0.0.1:5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - timescaledb-data:/home/postgres
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgress"]
+      interval: 5s
+      retries: 5
+    restart: always
+
+volumes:
+ timescaledb-data:

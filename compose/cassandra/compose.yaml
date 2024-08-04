@@ -1,0 +1,16 @@
+services:
+  cassandra:
+    image: cassandra:5.0
+    # image: cassandra:3.11
+    ports:
+      - 127.0.0.1:9042:9042
+    volumes:
+      - cassandra-data:/var/lib/cassandra
+    healthcheck:
+      test: ["CMD", "cqlsh", "-e", "DESCRIBE KEYSPACES"]
+      interval: 5s
+      retries: 5
+    restart: always
+
+volumes:
+  cassandra-data:

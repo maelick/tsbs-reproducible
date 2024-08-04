@@ -1,0 +1,14 @@
+services:
+  akumuli:
+    image: akumuli/akumuli:0.8.80-generic
+    # image: akumuli/akumuli:0.7.57-generic
+    ports:
+      - 127.0.0.1:8383:8383/udp # UDP (write)
+      - 127.0.0.1:8282:8282 # TCP (write)
+      - 127.0.0.1:8181:8181 # HTTP (read)
+    volumes:
+      - akumuli-data:/Akumuli
+    restart: always
+
+volumes:
+  akumuli-data:

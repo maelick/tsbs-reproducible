@@ -1,0 +1,18 @@
+services:
+  cratedb:
+    image: crate:5.7
+    command: -Cdiscovery.type=single-node
+    ports:
+      - 127.0.0.1:4200:4200
+    #   - 127.0.0.1:4300:4300
+      - 127.0.0.1:5433:5432
+    volumes:
+      - cratedb-data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4200"]
+      interval: 5s
+      retries: 5
+    restart: always
+
+volumes:
+  cratedb-data:

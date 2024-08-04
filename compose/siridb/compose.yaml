@@ -1,0 +1,11 @@
+services:
+  siridb:
+    image: ghcr.io/siridb/siridb-server:2.0.51
+    ports:
+      - 127.0.0.1:9002:9000
+    volumes:
+      - siridb-data:/var/lib/siridb
+    restart: always
+
+volumes:
+  siridb-data:
